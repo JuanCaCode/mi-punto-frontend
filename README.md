@@ -153,3 +153,5 @@ En desarrollo bajo metodología ágil (Scrum), organizado por sprints y gestiona
 ## 👥 Equipo de desarrollo
 Natalia Andrea Bravo Castro
 Juan Camilo Campo Tangarife
+
+#actualizacion de repo por prueba de CI/CD
