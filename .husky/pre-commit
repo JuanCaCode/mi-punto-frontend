@@ -1,0 +1,4 @@
+# Hook de pre-commit: corre lint + pruebas unitarias (rapido).
+# Las E2E (Playwright) quedan para el pipeline de CI.
+npm run lint
+npm test

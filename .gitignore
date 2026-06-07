@@ -17,6 +17,11 @@ dist-ssr
 # Vercel
 .vercel
 
+# Playwright / coverage
+/playwright-report
+/test-results
+/coverage
+
 
 # Editor directories and files
 .vscode/*

@@ -6,7 +6,7 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   // Carpetas que no se analizan.
-  { ignores: ["dist", "node_modules", "src/components/ui/**"] },
+  { ignores: ["dist", "node_modules", "src/components/ui/**", "playwright-report", "test-results", "coverage"] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
