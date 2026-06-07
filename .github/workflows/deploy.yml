@@ -31,16 +31,25 @@ jobs:
       - name: Descargar configuracion de produccion de Vercel
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Inyectar VITE_API_URL para el build de Vite
+      - name: Inyectar VITE_API_URL en el entorno de build de Vercel
         run: |
           if [ -z "${{ vars.VITE_API_URL }}" ]; then
             echo "::error::Falta la Variable de Actions VITE_API_URL (Settings → Secrets and variables → Actions → Variables)."
             exit 1
           fi
-          # Vite carga .env.production.local en cada build de produccion e incrusta
-          # las variables VITE_*. Esto es independiente del entorno de Vercel.
+          # 'vercel build' NO hereda el entorno del runner: reconstruye process.env
+          # SOLO desde .vercel/.env.production.local (lo crea 'vercel pull').
+          # Ademas, Vite da prioridad a process.env sobre los archivos .env, asi que
+          # hay que fijar el valor EN ese archivo (eliminando cualquier valor vacio).
+          ENV_FILE=.vercel/.env.production.local
+          touch "$ENV_FILE"
+          sed -i '/^VITE_API_URL=/d' "$ENV_FILE"
+          echo "VITE_API_URL=${{ vars.VITE_API_URL }}" >> "$ENV_FILE"
+          # Respaldo: archivo nativo de Vite (por si el build no toma el de Vercel).
           echo "VITE_API_URL=${{ vars.VITE_API_URL }}" > .env.production.local
           echo "Build apuntara a: ${{ vars.VITE_API_URL }}"
+          echo "--- .vercel/.env.production.local ---"
+          cat "$ENV_FILE"
 
       - name: Build de produccion (Vercel)
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
