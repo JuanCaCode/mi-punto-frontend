@@ -31,12 +31,19 @@ jobs:
       - name: Descargar configuracion de produccion de Vercel
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
+      - name: Inyectar VITE_API_URL para el build de Vite
+        run: |
+          if [ -z "${{ vars.VITE_API_URL }}" ]; then
+            echo "::error::Falta la Variable de Actions VITE_API_URL (Settings → Secrets and variables → Actions → Variables)."
+            exit 1
+          fi
+          # Vite carga .env.production.local en cada build de produccion e incrusta
+          # las variables VITE_*. Esto es independiente del entorno de Vercel.
+          echo "VITE_API_URL=${{ vars.VITE_API_URL }}" > .env.production.local
+          echo "Build apuntara a: ${{ vars.VITE_API_URL }}"
+
       - name: Build de produccion (Vercel)
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          # VITE_API_URL es variable de BUILD-TIME (Vite la incrusta en el bundle).
-          # Se inyecta aqui para no depender del entorno configurado en Vercel.
-          VITE_API_URL: ${{ vars.VITE_API_URL }}
 
       - name: Desplegar artefacto a produccion
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
