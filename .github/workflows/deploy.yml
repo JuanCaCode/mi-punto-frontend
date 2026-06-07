@@ -33,6 +33,10 @@ jobs:
 
       - name: Build de produccion (Vercel)
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          # VITE_API_URL es variable de BUILD-TIME (Vite la incrusta en el bundle).
+          # Se inyecta aqui para no depender del entorno configurado en Vercel.
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
 
       - name: Desplegar artefacto a produccion
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
