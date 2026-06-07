@@ -19,7 +19,7 @@ export default function GlobalBusinessManagement() {
   });
   const toggleMutation = useToggleBusiness();
 
-  const businesses = businessesQuery.data ?? [];
+  const businesses = useMemo(() => businessesQuery.data ?? [], [businessesQuery.data]);
 
   const filtered = useMemo(() => {
     if (!searchTerm.trim()) return businesses;
@@ -32,7 +32,7 @@ export default function GlobalBusinessManagement() {
     );
   }, [businesses, searchTerm]);
 
-  const handleToggle = async (id: number, name: string, currentlyActive: boolean) => {
+  const handleToggle = async (id: number, name: string) => {
     try {
       const result = await toggleMutation.mutateAsync(id);
       toast.success(
@@ -146,7 +146,7 @@ export default function GlobalBusinessManagement() {
                           <Eye className="w-5 h-5" />
                         </Link>
                         <button
-                          onClick={() => handleToggle(b.id, b.name, b.is_active)}
+                          onClick={() => handleToggle(b.id, b.name)}
                           disabled={toggleMutation.isPending}
                           className={`disabled:opacity-50 ${
                             b.is_active

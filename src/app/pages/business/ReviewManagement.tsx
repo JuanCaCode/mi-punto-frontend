@@ -1,4 +1,4 @@
-import { Loader2, Send, Star } from "lucide-react";
+import { Loader2, Send } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -21,7 +21,7 @@ export default function ReviewManagement() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [draft, setDraft] = useState("");
 
-  const reviews = reviewsQuery.data ?? [];
+  const reviews = useMemo(() => reviewsQuery.data ?? [], [reviewsQuery.data]);
   const filtered = useMemo(() => {
     if (filter === "pending") return reviews.filter((r) => !r.response);
     if (filter === "responded") return reviews.filter((r) => !!r.response);
