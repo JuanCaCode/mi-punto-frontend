@@ -1,4 +1,19 @@
 # Hook de pre-commit: corre lint + pruebas unitarias (rapido).
 # Las E2E (Playwright) quedan para el pipeline de CI.
+
+# Vitest 3 + jsdom requieren Node 20+. Si hay nvm, usar la version de .nvmrc.
+export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+  . "$NVM_DIR/nvm.sh" >/dev/null 2>&1
+  nvm use >/dev/null 2>&1 || true
+fi
+
+# Aviso claro si la version de Node es menor a 20.
+NODE_MAJOR=$(node -p "process.versions.node.split('.')[0]" 2>/dev/null || echo 0)
+if [ "$NODE_MAJOR" -lt 20 ]; then
+  echo "✖ Node $(node -v) detectado. Este proyecto requiere Node 20+ (ej: 'nvm use 20')."
+  exit 1
+fi
+
 npm run lint
 npm test

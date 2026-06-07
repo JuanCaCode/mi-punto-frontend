@@ -62,6 +62,8 @@ jobs:
     env:
       DATABASE_URL: postgresql+psycopg://mipunto:mipunto@localhost:5433/mi_punto
       VITE_API_URL: http://localhost:8000
+      # El frontend (vite preview) corre en :4173; el backend debe permitir ese origen.
+      CORS_ORIGINS: http://localhost:4173
 
     steps:
       - name: Checkout frontend
